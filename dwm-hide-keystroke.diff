@@ -1,0 +1,66 @@
+diff --color -ru b/config.def.h a/config.def.h
+--- b/config.def.h
++++ a/config.def.h
+@@ -82,6 +82,9 @@
+ 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
+ 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
+ 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
++    { MODKEY,                       XK_y,      hideunhide,     {.i = +1} },
++    { MODKEY,                       XK_u,      hideunhide,     {.i = -1} },
++    { MODKEY,                       XK_o,      hideunfocused,  {0} },
+ 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
+ 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+ 	TAGKEYS(                        XK_1,                      0)
+diff --color -ru b/dwm.c a/dwm.c
+--- b/dwm.c
++++ a/dwm.c
+@@ -174,6 +174,8 @@
+ static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
+ static void grabbuttons(Client *c, int focused);
+ static void grabkeys(void);
++static void hideunfocused(const Arg *arg);
++static void hideunhide(const Arg *arg);
+ static void incnmaster(const Arg *arg);
+ static void keypress(XEvent *e);
+ static void killclient(const Arg *arg);
+@@ -983,6 +985,40 @@
+ #endif /* XINERAMA */
+ 
+ void
++hideunhide(const Arg *arg)
++{
++    Client *c, *cur;
++    cur = selmon->sel;
++    if (cur && arg->i > 0) 
++        hide(cur);
++    else
++        for (c = selmon->clients; c; c=c->next ){
++             if ((HIDDEN(c) && (ISVISIBLE(c)))){
++                 show(c);
++                 focus(c);
++                 break;
++        }     
++    }
++    restack(selmon);
++}
++
++void
++hideunfocused(const Arg *arg)
++{
++    Client *c, *cur;
++    cur = selmon->sel;
++    if(!cur)
++        return;
++    for(c = selmon->clients; c; c=c->next){
++        if(c==cur)
++            continue;
++        else if(!HIDDEN(c) && ISVISIBLE(c))
++            hide(c);
++    }
++    arrange(selmon);
++}
++
++void
+ keypress(XEvent *e)
+ {
+ 	unsigned int i;
