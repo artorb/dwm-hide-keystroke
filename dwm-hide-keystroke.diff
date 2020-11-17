@@ -49,12 +49,12 @@ diff --color -ru b/dwm.c a/dwm.c
 +{
 +    Client *c, *cur;
 +    cur = selmon->sel;
-+    if(!cur)
++    if (!cur)
 +        return;
-+    for(c = selmon->clients; c; c=c->next){
-+        if(c==cur)
++    for (c = selmon->clients; c; c=c->next){
++        if (c==cur)
 +            continue;
-+        else if(!HIDDEN(c) && ISVISIBLE(c))
++        else if (!HIDDEN(c) && ISVISIBLE(c))
 +            hide(c);
 +    }
 +    arrange(selmon);
