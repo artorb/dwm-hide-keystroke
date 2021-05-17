@@ -33,7 +33,7 @@ diff --color -ru b/dwm.c a/dwm.c
 +    cur = selmon->sel;
 +    if (cur && arg->i > 0) 
 +        hide(cur);
-+    else
++    else if (arg->i < 0)
 +        for (c = selmon->clients; c; c=c->next ){
 +             if ((HIDDEN(c) && (ISVISIBLE(c)))){
 +                 show(c);
